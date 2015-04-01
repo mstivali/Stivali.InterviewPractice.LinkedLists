@@ -23,6 +23,7 @@ class LinkedList {
 public:
     
     LinkedList();
+    node *GetHeadOfList();
     void InsertAtFront(int);
     void AppendElement(int);
     bool InsertBeforeNode(int, int);
@@ -34,6 +35,8 @@ public:
     void DeleteDuplicates();
     void DeleteDuplicatesNoBuffer();
     int GetNthToLastNode(int);
+    int nthToLastRecursive(node *head, int k);
+    node* nthToLastRecursive2(node *head, int, int &i);
     void Display();
     
 private:
@@ -51,8 +54,9 @@ LinkedList::LinkedList() {
     firstNode = NULL;
 }
 
-
-
+node * LinkedList::GetHeadOfList(){
+    return firstNode;
+}
 
 void LinkedList::InsertAtFront(int data){
     //create a new node
@@ -401,6 +405,34 @@ int LinkedList::GetNthToLastNode(int k){
     
 }
 
+//runs in O(N) space
+int LinkedList::nthToLastRecursive(node *head, int k) {
+    if(head == NULL) return 0;
+    
+    int i = nthToLastRecursive(head->next, k) + 1;
+    
+    if(i == k) {
+        cout << "\n" << head->info << " is the element you are looking for.\n";
+    }
+    
+    return i;
+}
+
+node* LinkedList::nthToLastRecursive2(node *head, int k, int &i){
+    if(head == NULL){
+        return NULL;
+    }
+    
+    node* node = nthToLastRecursive2(head->next, k, i);
+    i = i+1;
+    if(i==k)
+    {
+        return head;
+    }
+    
+    return node;
+}
+
 void SeedLinkedList(LinkedList &linkedList, int size)
 {
     int counter = 0;
@@ -421,7 +453,6 @@ int main(int argc, const char * argv[]) {
     LinkedList linkedList;
     SeedLinkedList(linkedList, 10);
     
-    
     linkedList.Display();
     int choice;
     
@@ -438,7 +469,9 @@ int main(int argc, const char * argv[]) {
         cout<<"9. Delete Duplicates"<<endl;
         cout<<"10.Delete Duplicates With No Buffer"<<endl;
         cout<<"11. Find Nth To Last Element (Iterative)"<<endl;
-        cout<<"12. Exit"<<endl;
+        cout<<"12. Find Nth To Last Element (Recursive)"<<endl;
+        cout<<"13. Find Nth To Last Element (Recursive 2)" << endl;
+        cout<<"14. Exit"<<endl;
         cout<<"Enter the option: ";
         cin>>choice;
         switch(choice){
@@ -528,10 +561,21 @@ int main(int argc, const char * argv[]) {
                 int k;
                 cout << "Enter a value for k, where k is the nth to last node in a list: ";
                 cin >> k;
-                cout << "\nThe "<< k << "th to last element is " << linkedList.GetNthToLastNode(k) << endl;
+                cout << "\nThe "<< k << " to last element is " << linkedList.GetNthToLastNode(k) << endl;
                 break;
             case 12:
-                exit(0);
+                int kElement;
+                cout << "Enter a value for k, where k is the nth to last node in the list: ";
+                cin >> kElement;
+                linkedList.nthToLastRecursive(linkedList.GetHeadOfList(), kElement);
+                break;
+            case 13:
+                int kElement2;
+                cout << "Enter a value for k, where k is the nth to last node in the list: ";
+                cin >> kElement2;
+                int i=0;
+                node *result = linkedList.nthToLastRecursive2(linkedList.GetHeadOfList(), kElement2, i);
+                cout << "\nThe "<< kElement2 << " to last element is " << result->info << endl;
                 break;
         }
     }
